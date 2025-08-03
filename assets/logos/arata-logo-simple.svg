@@ -1,0 +1,17 @@
+<svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+  <!-- Simple diamond icon -->
+  <g transform="translate(8, 8)">
+    <polygon points="12,4 16,8 12,12 8,8" 
+             fill="none" stroke="#2c3e50" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Text -->
+  <g transform="translate(32, 10)">
+    <!-- ARATA text -->
+    <text x="0" y="14" font-family="Georgia, serif" font-size="16" font-weight="bold" 
+          fill="#2c3e50" text-anchor="start">ARATA</text>
+    <!-- JEWELRY text -->
+    <text x="0" y="26" font-family="Arial, sans-serif" font-size="8" font-weight="normal" 
+          fill="#2c3e50" text-anchor="start">JEWELRY</text>
+  </g>
+</svg> 

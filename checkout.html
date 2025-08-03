@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Checkout | ARATA JEWELRY</title>
+  <meta name="title" content="Checkout | ARATA JEWELRY">
+  <meta name="description" content="Complete your purchase with ARATA JEWELRY. Secure checkout with multiple payment options and fast shipping to your doorstep.">
+  <meta name="keywords" content="ARATA JEWELRY checkout, secure payment, jewelry purchase, order completion, ARATA JEWELRY payment">
+  <meta name="author" content="ARATA JEWELRY">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="language" content="English">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logos/arata-logo-simple.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/logos/arata-logo-simple.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/logos/arata-logo-simple.svg">
+  <link rel="apple-touch-icon" href="assets/logos/arata-logo-simple.svg">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://aratajewelry.com/checkout.html">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div id="header-include"></div>
+  <main class="checkout-page">
+    <div class="container">
+      <div class="checkout-steps">
+        <div class="step active">1<br>Cart</div>
+        <div class="step active">2<br>Checkout</div>
+        <div class="step">3<br>Complete</div>
+      </div>
+      <h1 class="checkout-title">Checkout</h1>
+      <div class="checkout-content">
+        <form class="checkout-form">
+          <section class="checkout-section">
+            <h2><span>👤</span> Recipient Information</h2>
+            <div class="form-row">
+              <input type="text" placeholder="Full Name *" required>
+              <input type="text" placeholder="Phone Number *" required>
+            </div>
+            <input type="email" placeholder="Email">
+          </section>
+          <section class="checkout-section">
+            <h2><span>📍</span> Shipping Address</h2>
+            <div class="form-row">
+              <input type="text" placeholder="Province/City *" required>
+              <input type="text" placeholder="District *" required>
+              <input type="text" placeholder="Ward/Commune *" required>
+            </div>
+            <input type="text" placeholder="Detailed Address *" required>
+            <textarea placeholder="Additional notes for order (optional)"></textarea>
+          </section>
+          <section class="checkout-section">
+            <h2><span>💳</span> Payment Method</h2>
+            <div class="payment-methods">
+              <label><input type="radio" name="payment" checked> Cash on Delivery (COD)</label>
+              <label><input type="radio" name="payment"> Bank Transfer</label>
+              <label><input type="radio" name="payment"> Credit/Debit Card</label>
+              <label><input type="radio" name="payment"> E-Wallet</label>
+            </div>
+          </section>
+        </form>
+        <aside class="checkout-summary">
+          <h2>Order Confirmation</h2>
+          <div class="summary-products" id="checkout-products">
+            <div class="summary-product">
+              <div class="summary-img">Image</div>
+              <div class="summary-info">
+                <div class="summary-name">Silver Ring with CZ Stone</div>
+                <div class="summary-variant">Size 6</div>
+                <div class="summary-price">1.200.000₫</div>
+              </div>
+            </div>
+            <div class="summary-product">
+              <div class="summary-img">Image</div>
+              <div class="summary-info">
+                <div class="summary-name">Silver 925 Heart Necklace</div>
+                <div class="summary-variant">Color: Silver | Size: M</div>
+                <div class="summary-price">850.000₫</div>
+              </div>
+            </div>
+          </div>
+          <div class="summary-totals" id="checkout-totals">
+            <div class="summary-row"><span>Subtotal</span><span>2.050.000₫</span></div>
+            <div class="summary-row"><span>Discount</span><span>-300.000₫</span></div>
+            <div class="summary-row"><span>Shipping</span><span>Free</span></div>
+            <div class="summary-row summary-total"><span>Total</span><span>1.750.000₫</span></div>
+          </div>
+          <button class="checkout-btn">Place Order</button>
+          <div class="summary-note">By placing an order, you agree to our <a href="#">policy</a>.</div>
+        </aside>
+      </div>
+    </div>
+  </main>
+  <div id="footer-include"></div>
+  <div id="order-popup" class="order-popup" style="display:none;"></div>
+  <div id="qr-popup" class="qr-popup" style="display:none;"></div>
+  <script src="assets/js/main.js"></script>
+</body>
+</html> 

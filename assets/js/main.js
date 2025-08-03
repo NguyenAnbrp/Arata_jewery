@@ -18,6 +18,152 @@ function setupHeaderMenu() {
   }
 }
 
+// Authentication check function
+function isLoggedIn() {
+  const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+  return user !== null;
+}
+
+// Show login required modal
+function showLoginRequiredModal(action) {
+  const modal = document.createElement('div');
+  modal.className = 'login-required-modal';
+  modal.innerHTML = `
+    <div class="login-required-content">
+      <h3>🔐 Login Required</h3>
+      <p>You need to login to ${action}</p>
+      <div class="modal-actions">
+        <button class="modal-btn primary" onclick="window.location.href='login.html'">Login</button>
+        <button class="modal-btn secondary" onclick="closeLoginModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  
+  // Add styles if not already added
+  if (!document.getElementById('login-modal-styles')) {
+    const styles = document.createElement('style');
+    styles.id = 'login-modal-styles';
+    styles.textContent = `
+      .login-required-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        animation: fadeIn 0.3s ease;
+      }
+      .login-required-content {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        animation: slideUp 0.3s ease;
+      }
+      .login-required-content h3 {
+        color: #131c2b;
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+      }
+      .login-required-content p {
+        color: #666;
+        margin-bottom: 25px;
+        line-height: 1.5;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+      }
+      .modal-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .modal-btn.primary {
+        background: #131c2b;
+        color: white;
+      }
+      .modal-btn.primary:hover {
+        background: #2c3e50;
+        transform: translateY(-2px);
+      }
+      .modal-btn.secondary {
+        background: #f8f9fa;
+        color: #666;
+        border: 1px solid #ddd;
+      }
+      .modal-btn.secondary:hover {
+        background: #e9ecef;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slideUp {
+        from { transform: translateY(30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(styles);
+  }
+}
+
+function closeLoginModal() {
+  const modal = document.querySelector('.login-required-modal');
+  if (modal) {
+    modal.remove();
+  }
+}
+
+// Update header authentication status
+function updateHeaderAuthStatus() {
+  const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+  const headerRight = document.querySelector('.header-right');
+  if (!headerRight) return;
+  
+  const loginBtn = headerRight.querySelector('.header-auth-btn.login-btn');
+  const accountBtn = headerRight.querySelector('.header-account-btn');
+  
+  if (user) {
+    // User is logged in
+    if (loginBtn) loginBtn.remove();
+    
+    // Add account button if not exists
+    if (!accountBtn) {
+      const accBtn = document.createElement('a');
+      accBtn.href = 'account.html';
+      accBtn.className = 'header-account-btn';
+      accBtn.textContent = user.name || 'Account';
+      headerRight.insertBefore(accBtn, headerRight.querySelector('.menu-toggle'));
+    }
+  } else {
+    // User is not logged in
+    if (accountBtn) accountBtn.remove();
+    
+    // Add login button if not exists
+    if (!loginBtn) {
+      const loginBtnNew = document.createElement('a');
+      loginBtnNew.href = 'login.html';
+      loginBtnNew.className = 'header-auth-btn login-btn';
+      loginBtnNew.textContent = 'Login';
+      headerRight.insertBefore(loginBtnNew, headerRight.querySelector('.menu-toggle'));
+    }
+  }
+}
+
 // Countdown timer for special offer
 function startOfferCountdown(targetDate) {
   function updateTimer() {
@@ -96,7 +242,7 @@ function renderProducts(page) {
     </div>
   `).join('');
   
-  // Thêm sự kiện click vào sản phẩm để chuyển đến trang chi tiết
+  // Add click event to products to navigate to detail page
   list.querySelectorAll('.product-card').forEach(card => {
     card.addEventListener('click', function(e) {
       // Don't navigate if clicking on buttons
@@ -152,7 +298,7 @@ let currentFilters = { price: [], material: [], style: [] };
 let currentSort = 'newest';
 function getFilteredSortedProducts() {
   let filtered = productData.filter(p => {
-    // Lọc theo giá
+    // Filter by price
     let priceOk = true;
     if (currentFilters.price.length) {
       priceOk = currentFilters.price.some(range => {
@@ -162,13 +308,13 @@ function getFilteredSortedProducts() {
         if (range === 'over2m') return p.price >= 2000000;
       });
     }
-    // Lọc theo chất liệu
+    // Filter by material
     let materialOk = !currentFilters.material.length || currentFilters.material.includes(p.material);
-    // Lọc theo kiểu dáng
+    // Filter by style
     let styleOk = !currentFilters.style.length || currentFilters.style.includes(p.style);
     return priceOk && materialOk && styleOk;
   });
-  // Sắp xếp
+  // Sort
   if (currentSort === 'price-asc') filtered.sort((a,b) => a.price - b.price);
   else if (currentSort === 'price-desc') filtered.sort((a,b) => b.price - a.price);
   else if (currentSort === 'newest') filtered.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -188,20 +334,20 @@ function renderProductsWithFilter(page) {
       <div class="product-img">${createProductImage(p.image, p.name)}</div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
-        <div class="product-material">Chất liệu: ${p.material}</div>
+        <div class="product-material">Material: ${p.material}</div>
         <div class="product-price">${formatPrice(p.price)}${p.oldPrice ? ` <span class='product-old-price'>${formatPrice(p.oldPrice)}</span>` : ''}</div>
         <div class="product-actions">
-          <button class="add-to-cart">Thêm vào giỏ</button>
+          <button class="add-to-cart">Add to Cart</button>
           <button class="favorite-btn">♡</button>
         </div>
       </div>
     </div>
-  `).join('') || '<div style="text-align:center;color:#888;">Không có sản phẩm phù hợp</div>';
+  `).join('') || '<div style="text-align:center;color:#888;">No products found</div>';
   
-  // Thêm sự kiện click vào sản phẩm để chuyển đến trang chi tiết
+  // Add click event to products to navigate to detail page
   list.querySelectorAll('.product-card').forEach(card => {
     card.addEventListener('click', function(e) {
-      // Không chuyển trang nếu click vào nút
+      // Don't navigate if clicking on buttons
       if (e.target.classList.contains('add-to-cart') || e.target.classList.contains('favorite-btn')) {
         return;
       }
@@ -209,13 +355,13 @@ function renderProductsWithFilter(page) {
       const productIndex = parseInt(this.getAttribute('data-product-index'));
       const product = products[productIndex];
       
-      // Lưu thông tin sản phẩm vào localStorage để trang chi tiết có thể đọc
+      // Save product info to localStorage for detail page to read
       localStorage.setItem('selectedProduct', JSON.stringify({
         index: productIndex,
         ...product
       }));
       
-      // Chuyển đến trang chi tiết sản phẩm
+      // Navigate to product detail page
       window.location.href = 'product-detail.html';
     });
   });
@@ -285,21 +431,21 @@ function setupProductFilters() {
       renderProductsWithFilter(1);
     };
   });
-  // Xóa tất cả
+  // Clear all
   const clearBtn = document.querySelector('.clear-filters');
   if (clearBtn) clearBtn.onclick = function() {
     currentFilters = { price: [], material: [], style: [] };
     document.querySelectorAll('.filters-sidebar input[type="checkbox"]').forEach(cb => cb.checked = false);
     renderProductsWithFilter(1);
   };
-  // Sắp xếp
+  // Sort
   const sortSelect = document.getElementById('sort-by');
   if (sortSelect) sortSelect.onchange = function() {
     currentSort = sortSelect.value;
     renderProductsWithFilter(1);
   };
 }
-// Nếu ở trang sản phẩm thì setup filter/sort
+// If on products page then setup filter/sort
 if (window.location.pathname.includes('products.html') || window.location.pathname.endsWith('/products')) {
   document.addEventListener('DOMContentLoaded', function() {
     console.log('Products page loaded, checking for search query...');
@@ -321,7 +467,7 @@ if (window.location.pathname.includes('products.html') || window.location.pathna
         // Update page title to show search results
         const pageTitle = document.querySelector('.page-title h1');
         if (pageTitle) {
-          pageTitle.textContent = `Kết quả tìm kiếm: "${searchQuery}" (${searchResults.products.length} sản phẩm)`;
+          pageTitle.textContent = `Search Results: "${searchQuery}" (${searchResults.products.length} products)`;
         }
         
         // Render search results
@@ -367,15 +513,15 @@ function renderSearchResults(products, page) {
       <div class="product-img">${createProductImage(p.image, p.name)}</div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
-        <div class="product-material">Chất liệu: ${p.material}</div>
+        <div class="product-material">Material: ${p.material}</div>
         <div class="product-price">${formatPrice(p.price)}${p.oldPrice ? ` <span class='product-old-price'>${formatPrice(p.oldPrice)}</span>` : ''}</div>
         <div class="product-actions">
-          <button class="add-to-cart">Thêm vào giỏ</button>
+          <button class="add-to-cart">Add to Cart</button>
           <button class="favorite-btn">♡</button>
         </div>
       </div>
     </div>
-  `).join('') || '<div style="text-align:center;color:#888;">Không có sản phẩm phù hợp</div>';
+  `).join('') || '<div style="text-align:center;color:#888;">No products found</div>';
   
   // Add click events for product cards
   list.querySelectorAll('.product-card').forEach(card => {
@@ -419,7 +565,7 @@ if (document.querySelector('.auth-form') && window.location.pathname.includes('r
     }
     users.push({ name, email, pass });
     localStorage.setItem('users', JSON.stringify(users));
-    alert('Registration successful! You can now login.');
+    alert('Registration successful! You can login now.');
     window.location.href = 'login.html';
   });
 }
@@ -434,7 +580,11 @@ if (document.querySelector('.auth-form') && window.location.pathname.includes('l
     if (user) {
       localStorage.setItem('currentUser', JSON.stringify(user));
       alert('Login successful!');
-      window.location.href = 'index.html';
+      // Update header status before redirecting
+      setTimeout(() => {
+        updateHeaderAuthStatus();
+        window.location.href = 'index.html';
+      }, 100);
     } else {
       alert('Email or password is incorrect!');
     }
@@ -451,6 +601,12 @@ function setCart(cart) {
 
 // Helper function to add product to cart
 function addToCart(product) {
+  // Check if user is logged in
+  if (!isLoggedIn()) {
+    showLoginRequiredModal('add products to cart');
+    return false;
+  }
+  
   let cart = getCart();
   let found = cart.find(item => item.name === product.name);
   if (found) {
@@ -478,13 +634,13 @@ function updateCartCount() {
     }
   }, 300);
 }
-// Gán sự kiện cho nút Thêm vào giỏ trên trang sản phẩm
+// Assign events to Add to Cart buttons on products page
 function setupAddToCartButtons() {
   document.querySelectorAll('.add-to-cart').forEach((btn, idx) => {
     btn.onclick = function() {
       let product = null;
       
-      // Nếu ở trang products, lấy từ productData
+      // If on products page, get from productData
       if (window.location.pathname.includes('products')) {
         let page = 1;
         const url = new URL(window.location.href);
@@ -493,7 +649,7 @@ function setupAddToCartButtons() {
         const start = (page - 1) * PRODUCTS_PER_PAGE;
         product = productData[start + idx];
       } else {
-        // Nếu ở trang khác (như index.html), lấy thông tin từ DOM
+        // If on other page (like index.html), get info from DOM
         const productCard = btn.closest('.product-card');
         if (productCard) {
           const productName = productCard.querySelector('.product-name')?.textContent;
@@ -501,10 +657,10 @@ function setupAddToCartButtons() {
           const productImg = productCard.querySelector('.product-img img')?.src;
           
           if (productName) {
-            // Tìm sản phẩm trong productData theo tên
+            // Find product in productData by name
             product = productData.find(p => p.name === productName);
             if (!product && productName && productPrice) {
-              // Nếu không tìm thấy, tạo object tạm thời
+              // If not found, create temporary object
               const price = parseInt(productPrice.replace(/[^\d]/g, ''));
               product = {
                 name: productName,
@@ -517,29 +673,36 @@ function setupAddToCartButtons() {
       }
       
       if (!product) {
-        alert('Không thể thêm sản phẩm vào giỏ hàng!');
+        alert('Cannot add product to cart!');
         return;
       }
       
-      addToCart(product);
-      alert('Đã thêm vào giỏ hàng!');
+      if (addToCart(product)) {
+        alert('Added to cart!');
+      }
     };
   });
 }
-// Gọi sau khi render sản phẩm
+// Call after rendering products
 const oldRenderProducts = renderProducts;
 renderProducts = function(page) {
   oldRenderProducts(page);
   setupAddToCartButtons();
 };
 
-// --- CART: Hiển thị và thao tác trên trang giỏ hàng ---
+// --- CART: Display and operate on cart page ---
 function renderCartPage() {
+  // Check if user is logged in
+  if (!isLoggedIn()) {
+    showLoginRequiredModal('view cart');
+    return;
+  }
+  
   const cartTable = document.querySelector('.cart-table tbody');
   const cartSummary = document.querySelector('.cart-summary .summary-totals');
   if (!cartTable || !cartSummary) return;
   let cart = getCart();
-  // Render sản phẩm
+  // Render products
   cartTable.innerHTML = cart.length ? cart.map((item, idx) => `
     <tr>
       <td class="cart-prod">
@@ -559,7 +722,7 @@ function renderCartPage() {
       <td><button class="cart-remove" data-idx="${idx}">✕</button></td>
     </tr>
   `).join('') : '<tr><td colspan="6" style="text-align:center;color:#888;">Empty Cart</td></tr>';
-  // Tính tổng
+  // Calculate total
   let tamtinh = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   let giamgia = cart.length ? 300000 : 0;
   let phiship = 0;
@@ -571,7 +734,7 @@ function renderCartPage() {
     <div class="summary-row summary-total"><span>Total</span><span>${formatPrice(tong)}</span></div>
   `;
   updateCartCount();
-  // Sự kiện tăng/giảm/xóa
+  // Events for increase/decrease/remove
   cartTable.querySelectorAll('.qty-minus').forEach(btn => {
     btn.onclick = function() {
       let idx = +btn.dataset.idx;
@@ -597,17 +760,30 @@ function renderCartPage() {
       cart.splice(idx, 1); setCart(cart); renderCartPage();
     };
   });
-  // Xóa tất cả
+  // Clear all
   const clearBtn = document.querySelector('.cart-clear');
   if (clearBtn) clearBtn.onclick = function() { setCart([]); renderCartPage(); };
 }
-// Tự động render cart nếu ở trang cart.html
+// Auto render cart if on cart.html page
 if (window.location.pathname.includes('cart')) {
-  document.addEventListener('DOMContentLoaded', renderCartPage);
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in first
+    if (!isLoggedIn()) {
+      showLoginRequiredModal('view cart');
+      return;
+    }
+    renderCartPage();
+  });
 }
 
-// --- CHECKOUT: Hiển thị sản phẩm và tổng tiền thực tế ---
+// --- CHECKOUT: Display products and actual totals ---
 function renderCheckoutSummary() {
+  // Check if user is logged in
+  if (!isLoggedIn()) {
+    showLoginRequiredModal('proceed to checkout');
+    return;
+  }
+  
   const prodBox = document.getElementById('checkout-products');
   const totalsBox = document.getElementById('checkout-totals');
   if (!prodBox || !totalsBox) return;
@@ -637,7 +813,7 @@ function renderCheckoutSummary() {
     <div class="summary-row summary-total"><span>Total</span><span>${formatPrice(tong)}</span></div>
   `;
 }
-// --- CHECKOUT: Đặt hàng, popup xác nhận, popup QR, lưu đơn hàng ---
+// --- CHECKOUT: Place order, confirmation popup, QR popup, save order ---
 function saveOrder(order) {
   let orders = JSON.parse(localStorage.getItem('orders') || '[]');
   orders.push(order);
@@ -657,10 +833,10 @@ function showQrPopup(onConfirm) {
   const popup = document.getElementById('qr-popup');
   popup.innerHTML = `<div class='qr-popup-content'>
     <button class='close-qr' onclick="document.getElementById('qr-popup').style.display='none'">×</button>
-    <h2>Quét mã QR để thanh toán</h2>
+    <h2>Scan QR code to pay</h2>
     <img src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=aratajewelry.vn' alt='QR code'>
-    <div class='qr-note'>Vui lòng chuyển khoản đúng số tiền và nội dung.</div>
-    <button id='qr-confirm-btn'>Đã chuyển khoản</button>
+    <div class='qr-note'>Please transfer the correct amount and content.</div>
+    <button id='qr-confirm-btn'>Payment Completed</button>
   </div>`;
   popup.style.display = 'flex';
   setTimeout(() => {
@@ -671,7 +847,7 @@ function showQrPopup(onConfirm) {
   }, 100);
 }
 function getCheckoutOrderInfo() {
-  // Lấy thông tin từ form checkout
+  // Get information from checkout form
   const form = document.querySelector('.checkout-form');
   if (!form) return null;
   const inputs = form.querySelectorAll('input, textarea');
@@ -680,34 +856,66 @@ function getCheckoutOrderInfo() {
     if (inp.type === 'radio' && !inp.checked) return;
     info[inp.placeholder || inp.name || inp.type] = inp.value;
   });
-  // Lấy sản phẩm từ giỏ hàng
+  // Get products from cart
   info.products = getCart();
-  // Tổng tiền
+  // Total amount
   info.total = info.products.reduce((sum, item) => sum + item.price * item.quantity, 0) - (info.products.length ? 300000 : 0);
   info.time = new Date().toLocaleString('vi-VN');
   return info;
 }
-// --- CHECKOUT: Tự động điền thông tin người nhận nếu đã đăng nhập ---
+// --- CHECKOUT: Auto-fill recipient information if logged in ---
 if (window.location.pathname.includes('checkout')) {
   document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in first
+    if (!isLoggedIn()) {
+      showLoginRequiredModal('proceed to checkout');
+      return;
+    }
+    
     renderCheckoutSummary();
-    // Tự động điền thông tin nếu đã đăng nhập
+    // Auto-fill information if logged in
     const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
     if (user) {
       const form = document.querySelector('.checkout-form');
       if (form) {
         const inputs = form.querySelectorAll('input');
-        // Giả định input đầu là họ tên, thứ hai là SĐT, thứ ba là email
+        // Assume first input is name, second is phone, third is email
         if (inputs[0]) inputs[0].value = user.name || '';
         if (inputs[1]) inputs[1].value = user.phone || '';
         if (inputs[2] && inputs[2].type === 'email') inputs[2].value = user.email || '';
       }
     }
-    // Đặt hàng
+    // Place order
     const btn = document.querySelector('.checkout-btn');
     if (btn) btn.onclick = function(e) {
       e.preventDefault();
-      // Xác định phương thức thanh toán
+      
+      // Validate required fields
+      const form = document.querySelector('.checkout-form');
+      const phoneInput = form.querySelector('input[placeholder*="Phone"]');
+      const addressInputs = form.querySelectorAll('input[placeholder*="Address"], input[placeholder*="Province"], input[placeholder*="District"], input[placeholder*="Ward"]');
+      
+      // Check phone number
+      if (!phoneInput || !phoneInput.value.trim()) {
+        alert('Please enter your phone number');
+        phoneInput?.focus();
+        return;
+      }
+      
+      // Check address fields
+      let addressComplete = true;
+      addressInputs.forEach(input => {
+        if (!input.value.trim()) {
+          addressComplete = false;
+        }
+      });
+      
+      if (!addressComplete) {
+        alert('Please complete all address fields (Province/City, District, Ward/Commune, Detailed Address)');
+        return;
+      }
+      
+      // Determine payment method
       const payMethod = document.querySelector('.payment-methods input[type="radio"]:checked');
       const payText = payMethod ? payMethod.parentElement.textContent.trim() : '';
       const order = getCheckoutOrderInfo();
@@ -716,7 +924,7 @@ if (window.location.pathname.includes('checkout')) {
         saveOrder(order);
         setCart([]);
         showOrderSuccessPopup();
-      } else if (payText.includes('Chuyển khoản') || payText.includes('Ví điện tử') || payText.includes('thẻ')) {
+      } else if (payText.includes('Bank Transfer') || payText.includes('E-Wallet') || payText.includes('Card')) {
         showQrPopup(() => {
           saveOrder(order);
           setCart([]);
@@ -746,7 +954,7 @@ function setupSearch() {
       console.log('Search submitted with query:', query);
       
       if (query.length === 0) {
-        alert('Vui lòng nhập từ khóa tìm kiếm!');
+        alert('Please enter a search keyword!');
         return;
       }
       
@@ -765,7 +973,7 @@ function setupSearch() {
       console.log('Sample filtered products:', filteredProducts.slice(0, 3).map(p => p.name));
       
       if (filteredProducts.length === 0) {
-        alert('Không tìm thấy sản phẩm phù hợp với từ khóa: "' + query + '"');
+        alert('No products found matching keyword: "' + query + '"');
         return;
       }
       
@@ -913,7 +1121,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   includeHTML('header-include', 'components/header.html');
   includeHTML('footer-include', 'components/footer.html');
-  // Chỉ chạy countdown nếu có offer-timer
+  // Only run countdown if offer-timer exists
   if (document.getElementById('offer-timer')) {
     const now = new Date();
     const offerEnd = new Date(now.getTime() + 2*24*60*60*1000 + 18*60*60*1000 + 45*60*1000 + 30*1000);
@@ -923,23 +1131,29 @@ document.addEventListener('DOMContentLoaded', function() {
         const offerBtn = document.querySelector('.offer-btn');
         if (offerBtn) {
           offerBtn.addEventListener('click', function() {
-            // Get the specific product on offer (product 6 - Nhẫn Vàng 18K with discount)
+            // Check if user is logged in
+            if (!isLoggedIn()) {
+              showLoginRequiredModal('add product to cart');
+              return;
+            }
+            
+            // Get the specific product on offer (product 6 - Gold Ring 18K with discount)
             const offerProduct = productData[5]; // Index 5 corresponds to product 6
             
             // Add product to cart automatically
-            addToCart(offerProduct);
-            
-            // Save the product data to localStorage for the detail page
-            localStorage.setItem('selectedProduct', JSON.stringify({
-              index: 5,
-              ...offerProduct
-            }));
-            
-            // Show success message
-            alert('Đã thêm sản phẩm vào giỏ hàng và chuyển đến trang chi tiết!');
-            
-            // Navigate to the product detail page
-            window.location.href = 'product-detail.html';
+            if (addToCart(offerProduct)) {
+              // Save the product data to localStorage for the detail page
+              localStorage.setItem('selectedProduct', JSON.stringify({
+                index: 5,
+                ...offerProduct
+              }));
+              
+              // Show success message
+              alert('Product added to cart and redirected to detail page!');
+              
+              // Navigate to the product detail page
+              window.location.href = 'product-detail.html';
+            }
           });
         }
   }
@@ -949,40 +1163,48 @@ document.addEventListener('DOMContentLoaded', function() {
     renderPagination(1);
   }
   
+  // View More Products button
+  const viewMoreBtn = document.querySelector('.view-more-btn');
+  if (viewMoreBtn) {
+    viewMoreBtn.addEventListener('click', function() {
+      window.location.href = 'products.html';
+    });
+  }
+  
+  // Setup click events for featured products on homepage
+  if (window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/')) {
+    const featuredProductCards = document.querySelectorAll('.featured-products .product-card');
+    featuredProductCards.forEach(card => {
+      card.addEventListener('click', function(e) {
+        // Don't navigate if clicking on buttons
+        if (e.target.classList.contains('add-to-cart') || e.target.classList.contains('favorite-btn')) {
+          return;
+        }
+        
+        const productIndex = parseInt(this.getAttribute('data-product-index'));
+        const product = productData[productIndex];
+        
+        if (product) {
+          // Save product info to localStorage for detail page to read
+          localStorage.setItem('selectedProduct', JSON.stringify({
+            index: productIndex,
+            ...product
+          }));
+          
+          // Navigate to product detail page
+          window.location.href = 'product-detail.html';
+        }
+      });
+    });
+  }
+  
   // Setup add to cart buttons on all pages
   setupAddToCartButtons();
   updateCartCount();
-  // Sau khi include header xong, thay đổi nút đăng nhập nếu đã đăng nhập
+  // After header is included, change login button if already logged in
   setTimeout(function() {
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    const headerRight = document.querySelector('.header-right');
-    if (headerRight) {
-      const loginBtn = headerRight.querySelector('.header-auth-btn.login-btn');
-      if (user) {
-        if (loginBtn) loginBtn.remove();
-        // Thêm nút tài khoản
-        if (!headerRight.querySelector('.header-account-btn')) {
-          const accBtn = document.createElement('a');
-          accBtn.href = 'account.html';
-          accBtn.className = 'header-account-btn';
-          accBtn.textContent = user.name || 'Tài khoản';
-          headerRight.insertBefore(accBtn, headerRight.querySelector('.menu-toggle'));
-        }
-      } else {
-        // Nếu chưa đăng nhập, đảm bảo có nút đăng nhập
-        if (!headerRight.querySelector('.header-auth-btn.login-btn')) {
-          const loginBtnNew = document.createElement('a');
-          loginBtnNew.href = 'login.html';
-          loginBtnNew.className = 'header-auth-btn login-btn';
-          loginBtnNew.textContent = 'Đăng nhập';
-          headerRight.insertBefore(loginBtnNew, headerRight.querySelector('.menu-toggle'));
-        }
-        // Xóa nút tài khoản nếu có
-        const accBtn = headerRight.querySelector('.header-account-btn');
-        if (accBtn) accBtn.remove();
-      }
-    }
-  }, 200); // Đợi header được include xong
+    updateHeaderAuthStatus();
+  }, 200); // Wait for header to be included
   
   // Initialize hero slideshow if on homepage
   if (window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/')) {

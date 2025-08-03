@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>My Account | ARATA JEWELRY</title>
+  <meta name="title" content="My Account | ARATA JEWELRY">
+  <meta name="description" content="Manage your ARATA JEWELRY account. View order history, update profile information, and manage your jewelry preferences.">
+  <meta name="keywords" content="ARATA JEWELRY account, my account, order history, profile management, ARATA JEWELRY profile">
+  <meta name="author" content="ARATA JEWELRY">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="language" content="English">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logos/arata-logo-simple.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/logos/arata-logo-simple.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/logos/arata-logo-simple.svg">
+  <link rel="apple-touch-icon" href="assets/logos/arata-logo-simple.svg">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://aratajewelry.com/account.html">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div id="header-include"></div>
+  <main class="account-page">
+    <div class="container">
+      <div class="account-box">
+        <h1>Thông tin tài khoản</h1>
+        <div class="account-info">
+          <div><strong>Họ tên:</strong> <span id="acc-name"></span></div>
+          <div><strong>Email:</strong> <span id="acc-email"></span></div>
+        </div>
+        <button id="logout-btn" class="logout-btn">Đăng xuất</button>
+      </div>
+      <div class="account-orders" id="account-orders"></div>
+    </div>
+  </main>
+  <div id="footer-include"></div>
+  <script src="assets/js/main.js"></script>
+  <script>
+    // Nếu chưa đăng nhập thì chuyển về login.html
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user) {
+      window.location.href = 'login.html';
+    } else {
+      document.getElementById('acc-name').textContent = user.name;
+      document.getElementById('acc-email').textContent = user.email;
+      document.getElementById('logout-btn').onclick = function() {
+        localStorage.removeItem('currentUser');
+        alert('Đã đăng xuất!');
+        window.location.href = 'index.html';
+      };
+    }
+  </script>
+  <script>
+    // Hiển thị danh sách đơn hàng
+    function renderAccountOrders() {
+      const box = document.getElementById('account-orders');
+      let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      if (!orders.length) {
+        box.innerHTML = '<h2>Đơn hàng của bạn</h2><div style="color:#888;">Bạn chưa có đơn hàng nào.</div>';
+        return;
+      }
+      box.innerHTML = '<h2>Đơn hàng của bạn</h2>' +
+        '<table class="order-list"><thead><tr><th>Mã đơn</th><th>Thời gian</th><th>Sản phẩm</th><th>Tổng tiền</th><th>Trạng thái</th></tr></thead><tbody>' +
+        orders.map((o, i) => `
+          <tr>
+            <td>#${i+1}</td>
+            <td>${o.time || ''}</td>
+            <td><ul class="order-products">${o.products.map(p => `<li>${p.name} x${p.quantity}</li>`).join('')}</ul></td>
+            <td>${(o.total || 0).toLocaleString('vi-VN')}₫</td>
+            <td><span class="order-status">Đã đặt</span></td>
+          </tr>
+        `).join('') + '</tbody></table>';
+    }
+    renderAccountOrders();
+  </script>
+</body>
+</html> 

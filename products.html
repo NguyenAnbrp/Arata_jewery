@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Jewelry Collection | ARATA JEWELRY</title>
+  <meta name="title" content="Jewelry Collection | ARATA JEWELRY">
+  <meta name="description" content="Explore our complete jewelry collection featuring rings, necklaces, earrings, and more. Premium quality jewelry with elegant designs. Shop now with free shipping.">
+  <meta name="keywords" content="jewelry collection, rings, necklaces, earrings, premium jewelry, ARATA JEWELRY, luxury jewelry, fine jewelry, silver jewelry, gold jewelry, jewelry shop">
+  <meta name="author" content="ARATA JEWELRY">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://aratajewelry.com/products.html">
+  <meta property="og:title" content="Jewelry Collection | ARATA JEWELRY">
+  <meta property="og:description" content="Explore our complete jewelry collection featuring rings, necklaces, earrings, and more. Premium quality jewelry with elegant designs.">
+  <meta property="og:image" content="https://aratajewelry.com/assets/logos/arata-logo-simple.svg">
+  <meta property="og:site_name" content="ARATA JEWELRY">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://aratajewelry.com/products.html">
+  <meta property="twitter:title" content="Jewelry Collection | ARATA JEWELRY">
+  <meta property="twitter:description" content="Explore our complete jewelry collection featuring rings, necklaces, earrings, and more. Premium quality jewelry with elegant designs.">
+  <meta property="twitter:image" content="https://aratajewelry.com/assets/logos/arata-logo-simple.svg">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logos/arata-logo-simple.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/logos/arata-logo-simple.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/logos/arata-logo-simple.svg">
+  <link rel="apple-touch-icon" href="assets/logos/arata-logo-simple.svg">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://aratajewelry.com/products.html">
+  
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Jewelry Collection",
+    "description": "Complete jewelry collection featuring rings, necklaces, earrings, and more",
+    "url": "https://aratajewelry.com/products.html",
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": [
+        {
+          "@type": "Product",
+          "name": "Silver Ring with Gemstone",
+          "description": "Premium silver ring with natural gemstone",
+          "category": "Rings"
+        },
+        {
+          "@type": "Product", 
+          "name": "Silver Charm Bracelet",
+          "description": "Elegant silver charm bracelet",
+          "category": "Bracelets"
+        },
+        {
+          "@type": "Product",
+          "name": "Moon Necklace",
+          "description": "Beautiful moon pendant necklace",
+          "category": "Necklaces"
+        }
+      ]
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- Header -->
+  <div id="header-include"></div>
+
+  <main class="product-page">
+    <div class="container">
+      <div class="page-title">
+        <h1>ARATA JEWELRY Collection</h1>
+      </div>
+      <div class="product-page-content">
+        <!-- Filters Column -->
+        <aside class="filters-sidebar">
+          <div class="filter-group">
+            <h3>Filters <button class="clear-filters">Clear All</button></h3>
+          </div>
+          <div class="filter-group">
+            <h4>Price Range</h4>
+            <ul>
+              <li><label><input type="checkbox"> Under 500k</label></li>
+              <li><label><input type="checkbox"> 500k - 1M</label></li>
+              <li><label><input type="checkbox"> 1M - 2M</label></li>
+              <li><label><input type="checkbox"> Above 2M</label></li>
+            </ul>
+          </div>
+          <div class="filter-group">
+            <h4>Material</h4>
+            <ul>
+              <li><label><input type="checkbox"> Silver 925</label></li>
+              <li><label><input type="checkbox"> Gold 18k</label></li>
+              <li><label><input type="checkbox"> Gold 14k</label></li>
+              <li><label><input type="checkbox"> Titanium</label></li>
+            </ul>
+          </div>
+          <div class="filter-group">
+            <h4>Style</h4>
+            <ul>
+              <li><label><input type="checkbox"> Simple Ring</label></li>
+              <li><label><input type="checkbox"> Gemstone Ring</label></li>
+              <li><label><input type="checkbox"> Wedding Ring</label></li>
+              <li><label><input type="checkbox"> Vintage Ring</label></li>
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Products Grid -->
+        <section class="products-grid-container">
+          <div class="sort-bar">
+            <label for="sort-by">Sort by:</label>
+            <select id="sort-by" name="sort-by">
+              <option value="newest">Newest</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </div>
+          <div class="product-list" id="product-list">
+            <!-- Sản phẩm sẽ được render bằng JavaScript -->
+          </div>
+          <nav class="pagination" id="pagination">
+            <!-- Nút chuyển trang sẽ được render bằng JavaScript -->
+          </nav>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div id="footer-include"></div>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html> 

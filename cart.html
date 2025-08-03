@@ -73,12 +73,32 @@
             <div class="summary-row"><span>Shipping</span><span>Free</span></div>
             <div class="summary-row summary-total"><span>Total</span><span>0₫</span></div>
           </div>
-          <a href="checkout.html" class="checkout-btn">Checkout</a>
+          <button class="checkout-btn" onclick="proceedToCheckout()">Checkout</button>
         </aside>
       </div>
     </div>
   </main>
   <div id="footer-include"></div>
   <script src="assets/js/main.js"></script>
+  <script>
+    function proceedToCheckout() {
+      // Check if user is logged in
+      const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (!user) {
+        showLoginRequiredModal('proceed to checkout');
+        return;
+      }
+      
+      // Check if cart has items
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      if (cart.length === 0) {
+        alert('Cart is empty! Please add products before checkout.');
+        return;
+      }
+      
+      // Proceed to checkout
+      window.location.href = 'checkout.html';
+    }
+  </script>
 </body>
 </html> 

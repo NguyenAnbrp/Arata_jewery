@@ -98,7 +98,7 @@
                 <!-- Product Gallery -->
                 <div class="product-gallery">
                     <div class="main-image">
-                        <img src="./assets/images/1.png" alt="Nhẫn Bạc Đính Đá" id="main-product-image">
+                        <img src="./assets/images/1.png" alt="Silver Ring with Gemstone" id="main-product-image">
                         <div class="image-overlay">
                             <button class="zoom-btn"><i class="fas fa-search-plus"></i></button>
                         </div>
@@ -390,28 +390,67 @@
             // Add to cart functionality
             const addToCartBtn = document.querySelector('.add-to-cart-btn');
             addToCartBtn.addEventListener('click', function() {
+                // Check if user is logged in
+                const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+                if (!user) {
+                    showLoginRequiredModal('add product to cart');
+                    return;
+                }
+                
                 const quantity = parseInt(quantityInput.value);
                 const selectedSize = document.querySelector('.size-btn.active').textContent;
                 const product = selectedProduct || {
-                    name: 'Nhẫn Bạc Đính Đá',
+                    name: 'Silver Ring with Gemstone',
                     price: 1200000
                 };
                 
                 // Add to cart logic here
-                console.log('Added to cart:', {
-                    product: product.name,
-                    quantity: quantity,
-                    size: selectedSize,
-                    price: product.price
-                });
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const existingItem = cart.find(item => item.name === product.name);
                 
-                                 // Show success message
-                 alert('Product added to cart!');
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    cart.push({
+                        ...product,
+                        quantity: quantity,
+                        variant: `Size ${selectedSize}`
+                    });
+                }
+                
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Show success message
+                alert('Product added to cart!');
             });
 
             // Buy now functionality
             const buyNowBtn = document.querySelector('.buy-now-btn');
             buyNowBtn.addEventListener('click', function() {
+                // Check if user is logged in
+                const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+                if (!user) {
+                    showLoginRequiredModal('purchase product');
+                    return;
+                }
+                
+                // Add to cart first, then redirect to checkout
+                const quantity = parseInt(quantityInput.value);
+                const selectedSize = document.querySelector('.size-btn.active').textContent;
+                const product = selectedProduct || {
+                    name: 'Silver Ring with Gemstone',
+                    price: 1200000
+                };
+                
+                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                cart.push({
+                    ...product,
+                    quantity: quantity,
+                    variant: `Size ${selectedSize}`
+                });
+                
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
                 // Redirect to checkout
                 window.location.href = 'checkout.html';
             });
@@ -585,19 +624,34 @@
             relatedProductsGrid.querySelectorAll('.add-to-cart').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
+                    
+                    // Check if user is logged in
+                    const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+                    if (!user) {
+                        showLoginRequiredModal('add product to cart');
+                        return;
+                    }
+                    
                     const card = this.closest('.product-card');
                     const productIndex = parseInt(card.getAttribute('data-product-index'));
                     const product = allProducts[productIndex];
                     
                     // Add to cart logic
                     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                    cart.push({
-                        ...product,
-                        quantity: 1
-                    });
+                    const existingItem = cart.find(item => item.name === product.name);
+                    
+                    if (existingItem) {
+                        existingItem.quantity += 1;
+                    } else {
+                        cart.push({
+                            ...product,
+                            quantity: 1
+                        });
+                    }
+                    
                     localStorage.setItem('cart', JSON.stringify(cart));
                     
-                                         alert('Product added to cart!');
+                    alert('Product added to cart!');
                 });
             });
         }

@@ -554,6 +554,17 @@ if (document.querySelector('.auth-form') && window.location.pathname.includes('r
     const email = this.querySelector('input[type="email"]').value.trim();
     const pass = this.querySelectorAll('input[type="password"]')[0].value;
     const pass2 = this.querySelectorAll('input[type="password"]')[1].value;
+    
+    // Password validation: no spaces and minimum 4 characters
+    if (pass.includes(' ')) {
+      alert('Password cannot contain spaces!');
+      return;
+    }
+    if (pass.length < 4) {
+      alert('Password must be at least 4 characters long!');
+      return;
+    }
+    
     if (pass !== pass2) {
       alert('Password confirmation does not match!');
       return;
